@@ -1,3 +1,4 @@
+
 import os
 import re
 import importlib
@@ -7,11 +8,14 @@ import sys
 def _import_protocol(base_path, protocol_module_name):
     """
     Import a module from a base path, used to import protocol modules.
+
     This implementation is derived from the import_module example here:
         https://docs.python.org/3/library/importlib.html#approximating-importlib-import-module
     """
 
     # Try to return the module if it's been loaded already
+    try:
+        return sys.modules[protocol_module_name]
     except KeyError:
         pass
 
@@ -24,12 +28,11 @@ def _import_protocol(base_path, protocol_module_name):
 
     # If the module does not exist, raise an exception and let the
     # caller handle it
-    if(not os.path.exists(spec.origin)):
+    if( not os.path.exists(spec.origin) ):
         raise ImportError("No module named '{}'".format(protocol_module_name))
 
     sys.modules[protocol_module_name] = module
     spec.loader.exec_module(module)
-
     return module
 
 
